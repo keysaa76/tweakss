@@ -1,0 +1,26 @@
+name: Build LEVSCLOADES Fast
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+      - name: Build fast-start EXE folder
+        run: |
+          python -m PyInstaller --onedir --windowed --clean --name LEVSCLOADES main.py
+      - uses: actions/upload-artifact@v5
+        with:
+          name: LEVSCLOADES-Windows-Fast
+          path: dist/LEVSCLOADES/
+          if-no-files-found: error
